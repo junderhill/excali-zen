@@ -115,3 +115,4 @@ class PopupController {
 document.addEventListener('DOMContentLoaded', () => {
   new PopupController();
 });
+

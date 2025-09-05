@@ -28,3 +28,4 @@
 
 ## Note
 Temporary add-ons are removed when Firefox restarts. For permanent installation, the extension needs to be signed by Mozilla or installed from the Firefox Add-ons store.
+

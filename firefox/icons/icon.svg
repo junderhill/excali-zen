@@ -8,3 +8,4 @@
   <circle cx="64" cy="64" r="62" fill="url(#gradient)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
   <text x="64" y="80" font-family="Arial" font-size="64" text-anchor="middle" fill="white">🧘</text>
 </svg>
+
