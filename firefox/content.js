@@ -7,13 +7,16 @@ class ExcaliZen {
   }
 
   init() {
-    // Listen for messages from popup
+    // Listen for messages from popup and background script
     browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (message.action === 'toggleZenMode') {
         this.toggleZenMode();
         sendResponse({ zenMode: this.isZenMode });
       } else if (message.action === 'getZenState') {
         sendResponse({ zenMode: this.isZenMode });
+      } else if (message.action === 'ping') {
+        // Used by background script to check if content script is injected
+        sendResponse({ injected: true });
       }
     });
 

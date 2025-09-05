@@ -14,17 +14,60 @@ class PopupController {
     // Add event listeners
     this.toggleButton.addEventListener('click', () => this.toggleZenMode());
     
-    // Check if we're on Excalidraw
+    // Add options page link
+    document.getElementById('optionsLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      browser.runtime.openOptionsPage();
+      window.close();
+    });
+    
+    // Check if we're on a supported Excalidraw domain
     const tabs = await browser.tabs.query({ active: true, currentWindow: true });
     const activeTab = tabs[0];
     
-    if (!activeTab || !activeTab.url.includes('excalidraw.com')) {
-      this.showError('Please visit Excalidraw.com to use this extension');
+    if (!activeTab) {
+      this.showError('Unable to access current tab');
+      return;
+    }
+    
+    const isSupported = await this.isSupportedDomain(activeTab.url);
+    if (!isSupported) {
+      this.showError('This extension only works on Excalidraw domains. Add custom domains in options.');
       return;
     }
     
     // Get current zen mode state
     await this.updateStatus();
+  }
+
+  async isSupportedDomain(url) {
+    if (!url) return false;
+    
+    // Always support excalidraw.com
+    if (url.includes('excalidraw.com')) {
+      return true;
+    }
+    
+    // Check custom domains
+    try {
+      const result = await browser.storage.local.get(['customDomains']);
+      const customDomains = result.customDomains || [];
+      
+      return customDomains.some(domain => {
+        try {
+          const domainUrl = new URL(domain);
+          const tabUrl = new URL(url);
+          return tabUrl.hostname === domainUrl.hostname && 
+                 tabUrl.port === domainUrl.port &&
+                 tabUrl.protocol === domainUrl.protocol;
+        } catch (error) {
+          return false;
+        }
+      });
+    } catch (error) {
+      console.error('Error checking custom domains:', error);
+      return false;
+    }
   }
 
   async updateStatus() {

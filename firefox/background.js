@@ -1,16 +1,81 @@
 // Excali-Zen Background Script
 
+// Check if URL is a supported Excalidraw domain
+async function isSupportedDomain(url) {
+  if (!url) return false;
+  
+  // Always support excalidraw.com
+  if (url.includes('excalidraw.com')) {
+    return true;
+  }
+  
+  // Check custom domains
+  try {
+    const result = await browser.storage.local.get(['customDomains']);
+    const customDomains = result.customDomains || [];
+    
+    return customDomains.some(domain => {
+      try {
+        const domainUrl = new URL(domain);
+        const tabUrl = new URL(url);
+        return tabUrl.hostname === domainUrl.hostname && 
+               tabUrl.port === domainUrl.port &&
+               tabUrl.protocol === domainUrl.protocol;
+      } catch (error) {
+        return false;
+      }
+    });
+  } catch (error) {
+    console.error('Error checking custom domains:', error);
+    return false;
+  }
+}
+
+// Inject content script into custom domains
+async function injectContentScript(tabId, url) {
+  try {
+    // Check if content script is already injected
+    try {
+      await browser.tabs.sendMessage(tabId, { action: 'ping' });
+      return; // Already injected
+    } catch (error) {
+      // Not injected, proceed to inject
+    }
+    
+    // Inject CSS first
+    await browser.tabs.insertCSS(tabId, {
+      file: 'zen-mode.css'
+    });
+    
+    // Then inject JavaScript
+    await browser.tabs.executeScript(tabId, {
+      file: 'content.js'
+    });
+    
+    console.log('Content script injected for:', url);
+  } catch (error) {
+    console.error('Error injecting content script:', error);
+  }
+}
+
 // Handle extension icon click
 browser.browserAction.onClicked.addListener(async (tab) => {
-  // Only work on Excalidraw pages
-  if (!tab.url.includes('excalidraw.com')) {
+  // Check if this is a supported Excalidraw domain
+  const isSupported = await isSupportedDomain(tab.url);
+  
+  if (!isSupported) {
     browser.notifications.create({
       type: 'basic',
       iconUrl: 'icons/icon-48.png',
       title: 'Excali-Zen',
-      message: 'This extension only works on Excalidraw.com'
+      message: 'This extension only works on Excalidraw domains. Add custom domains in the options page.'
     });
     return;
+  }
+  
+  // Inject content script for custom domains
+  if (!tab.url.includes('excalidraw.com')) {
+    await injectContentScript(tab.id, tab.url);
   }
 
   // Toggle zen mode
@@ -49,14 +114,23 @@ function updateBrowserActionIcon(tabId, isZenMode) {
 
 // Handle tab updates to check if we're on Excalidraw
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete' && tab.url && tab.url.includes('excalidraw.com')) {
-    // Check zen mode state and update icon accordingly
-    try {
-      const response = await browser.tabs.sendMessage(tabId, { action: 'getZenState' });
-      updateBrowserActionIcon(tabId, response.zenMode);
-    } catch (error) {
-      // Content script not ready yet, use default icon
-      updateBrowserActionIcon(tabId, false);
+  if (changeInfo.status === 'complete' && tab.url) {
+    const isSupported = await isSupportedDomain(tab.url);
+    
+    if (isSupported) {
+      // Inject content script for custom domains
+      if (!tab.url.includes('excalidraw.com')) {
+        await injectContentScript(tabId, tab.url);
+      }
+      
+      // Check zen mode state and update icon accordingly
+      try {
+        const response = await browser.tabs.sendMessage(tabId, { action: 'getZenState' });
+        updateBrowserActionIcon(tabId, response.zenMode);
+      } catch (error) {
+        // Content script not ready yet, use default icon
+        updateBrowserActionIcon(tabId, false);
+      }
     }
   }
 });
@@ -67,14 +141,32 @@ browser.commands.onCommand.addListener(async (command) => {
     const tabs = await browser.tabs.query({ active: true, currentWindow: true });
     const activeTab = tabs[0];
     
-    if (activeTab && activeTab.url.includes('excalidraw.com')) {
-      try {
-        const response = await browser.tabs.sendMessage(activeTab.id, { action: 'toggleZenMode' });
-        updateBrowserActionIcon(activeTab.id, response.zenMode);
-      } catch (error) {
-        console.error('Error toggling zen mode via keyboard:', error);
+    if (activeTab) {
+      const isSupported = await isSupportedDomain(activeTab.url);
+      
+      if (isSupported) {
+        // Inject content script for custom domains
+        if (!activeTab.url.includes('excalidraw.com')) {
+          await injectContentScript(activeTab.id, activeTab.url);
+        }
+        
+        try {
+          const response = await browser.tabs.sendMessage(activeTab.id, { action: 'toggleZenMode' });
+          updateBrowserActionIcon(activeTab.id, response.zenMode);
+        } catch (error) {
+          console.error('Error toggling zen mode via keyboard:', error);
+        }
       }
     }
+  }
+});
+
+// Handle messages from options page
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'updateCustomDomains') {
+    // Options page is notifying us of domain changes
+    console.log('Custom domains updated:', message.domains);
+    sendResponse({ success: true });
   }
 });
 
@@ -86,8 +178,11 @@ browser.runtime.onInstalled.addListener((details) => {
       type: 'basic',
       iconUrl: 'icons/icon-48.png',
       title: 'Excali-Zen Installed!',
-      message: 'Visit Excalidraw.com and click the extension icon to enter zen mode. Use Ctrl+Shift+Z as a shortcut!'
+      message: 'Visit Excalidraw.com and click the extension icon to enter zen mode. Add custom domains in options!'
     });
+    
+    // Open options page on first install
+    browser.runtime.openOptionsPage();
   }
 });
 

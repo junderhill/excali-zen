@@ -185,6 +185,18 @@ kbd {
   text-align: center;
 }
 
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.link-separator {
+  color: #ccc;
+  font-size: 12px;
+}
+
 .link {
   color: #667eea;
   text-decoration: none;

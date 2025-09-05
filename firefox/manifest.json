@@ -7,7 +7,9 @@
   "permissions": [
     "activeTab",
     "tabs",
-    "*://excalidraw.com/*"
+    "storage",
+    "*://excalidraw.com/*",
+    "*://*/*"
   ],
   
   "content_scripts": [
@@ -18,6 +20,8 @@
       "run_at": "document_end"
     }
   ],
+
+  "options_page": "options.html",
   
   "background": {
     "scripts": ["background.js"],
