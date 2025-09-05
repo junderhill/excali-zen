@@ -1,0 +1,48 @@
+{
+  "manifest_version": 2,
+  "name": "Excali-Zen",
+  "version": "1.0.0",
+  "description": "Zen mode for Excalidraw - hide clutter and focus on your drawings",
+  
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "*://excalidraw.com/*"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": ["*://excalidraw.com/*"],
+      "js": ["content.js"],
+      "css": ["zen-mode.css"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Toggle Zen Mode",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  
+  "web_accessible_resources": [
+    "zen-mode.css"
+  ]
+}

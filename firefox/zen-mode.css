@@ -1,0 +1,199 @@
+/* Excali-Zen Mode Styles */
+
+/* Zen mode notification */
+.excali-zen-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 10000;
+  animation: zenFadeIn 0.3s ease-out;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes zenFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Zen mode active styles */
+body.excali-zen-mode {
+  /* Hide top menu bar */
+  --zen-hidden: none !important;
+}
+
+/* Hide Excalidraw UI elements when in zen mode */
+body.excali-zen-mode .App-menu,
+body.excali-zen-mode .App-toolbar,
+body.excali-zen-mode .App-toolbar-content,
+body.excali-zen-mode .App-bottom-bar,
+body.excali-zen-mode .layer-ui__wrapper,
+body.excali-zen-mode .Stats,
+body.excali-zen-mode .help-icon,
+body.excali-zen-mode .zen-mode-toggle,
+body.excali-zen-mode .github-corner,
+body.excali-zen-mode [data-testid="main-menu-trigger"],
+body.excali-zen-mode [data-testid="library-menu-trigger"],
+body.excali-zen-mode [data-testid="pen-mode-button"],
+body.excali-zen-mode [data-testid="lock-button"],
+body.excali-zen-mode [data-testid="link-button"],
+body.excali-zen-mode [data-testid="eraser-button"],
+body.excali-zen-mode .App-menu__left,
+body.excali-zen-mode .App-menu__right,
+body.excali-zen-mode .welcome-screen,
+body.excali-zen-mode .modal-container,
+body.excali-zen-mode .layer-ui__wrapper--ui-hidden {
+  display: var(--zen-hidden) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide specific toolbar sections */
+body.excali-zen-mode .App-toolbar__left,
+body.excali-zen-mode .App-toolbar__right,
+body.excali-zen-mode .App-toolbar__center {
+  display: var(--zen-hidden) !important;
+}
+
+/* Hide the main menu items */
+body.excali-zen-mode .dropdown-menu,
+body.excali-zen-mode .dropdown-menu-container,
+body.excali-zen-mode .context-menu,
+body.excali-zen-mode .context-menu-container {
+  display: var(--zen-hidden) !important;
+}
+
+/* Hide library panel */
+body.excali-zen-mode .layer-ui__wrapper--library,
+body.excali-zen-mode .library-menu-items,
+body.excali-zen-mode .library-menu {
+  display: var(--zen-hidden) !important;
+}
+
+/* Hide collaboration UI */
+body.excali-zen-mode .CollabButton,
+body.excali-zen-mode .UserList,
+body.excali-zen-mode .live-collaboration-trigger,
+body.excali-zen-mode [data-testid="collab-button"] {
+  display: var(--zen-hidden) !important;
+}
+
+/* Hide zoom controls */
+body.excali-zen-mode .zoom-actions,
+body.excali-zen-mode [data-testid="zoom-in-button"],
+body.excali-zen-mode [data-testid="zoom-out-button"],
+body.excali-zen-mode [data-testid="reset-zoom-button"] {
+  display: var(--zen-hidden) !important;
+}
+
+/* Hide help and info elements */
+body.excali-zen-mode .help-dialog,
+body.excali-zen-mode .help-dialog__wrapper,
+body.excali-zen-mode [data-testid="help-dialog-trigger"],
+body.excali-zen-mode .welcome-screen-decor,
+body.excali-zen-mode .welcome-screen-center {
+  display: var(--zen-hidden) !important;
+}
+
+/* Ensure canvas takes full space */
+body.excali-zen-mode .excalidraw,
+body.excali-zen-mode .excalidraw__canvas,
+body.excali-zen-mode canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Hide scrollbars in zen mode */
+body.excali-zen-mode::-webkit-scrollbar {
+  display: none !important;
+}
+
+body.excali-zen-mode {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Focus on the drawing area */
+body.excali-zen-mode .App {
+  background: #fefefe !important;
+}
+
+/* Dark mode support */
+body.excali-zen-mode.theme--dark .App {
+  background: #1e1e1e !important;
+}
+
+/* Hide any floating UI elements */
+body.excali-zen-mode .floating-toolbar,
+body.excali-zen-mode .mobile-misc-tools,
+body.excali-zen-mode .toast,
+body.excali-zen-mode .Toast {
+  display: var(--zen-hidden) !important;
+}
+
+/* Ensure drawing tools are still accessible via keyboard shortcuts */
+body.excali-zen-mode .sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Subtle transition for entering/exiting zen mode */
+body {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hide any remaining UI elements that might appear */
+body.excali-zen-mode .App-menu,
+body.excali-zen-mode .App-toolbar,
+body.excali-zen-mode .layer-ui__wrapper:not(.layer-ui__wrapper--canvas),
+body.excali-zen-mode .island,
+body.excali-zen-mode .panelColumn {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Make sure canvas container takes full viewport */
+body.excali-zen-mode .App-bottom-bar,
+body.excali-zen-mode .App-toolbar-content {
+  height: 0 !important;
+  min-height: 0 !important;
+}
+
+/* Special handling for fullscreen mode */
+body.excali-zen-mode:-webkit-full-screen,
+body.excali-zen-mode:-moz-full-screen,
+body.excali-zen-mode:-ms-fullscreen,
+body.excali-zen-mode:fullscreen {
+  background: #fefefe !important;
+}
+
+body.excali-zen-mode.theme--dark:-webkit-full-screen,
+body.excali-zen-mode.theme--dark:-moz-full-screen,
+body.excali-zen-mode.theme--dark:-ms-fullscreen,
+body.excali-zen-mode.theme--dark:fullscreen {
+  background: #1e1e1e !important;
+}

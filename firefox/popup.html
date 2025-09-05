@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excali-Zen</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <div class="header">
+      <div class="logo">🧘</div>
+      <h1>Excali-Zen</h1>
+    </div>
+    
+    <div class="status" id="status">
+      <span class="status-text" id="statusText">Checking...</span>
+    </div>
+    
+    <button class="zen-button" id="toggleButton" disabled>
+      <span class="button-icon" id="buttonIcon">🧘</span>
+      <span class="button-text" id="buttonText">Loading...</span>
+    </button>
+    
+    <div class="info">
+      <p class="shortcut">Shortcut: <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></p>
+      <p class="description">Hide clutter and focus on your drawings</p>
+    </div>
+    
+    <div class="features">
+      <div class="feature">
+        <span class="feature-icon">🎯</span>
+        <span class="feature-text">Focus Mode</span>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">📺</span>
+        <span class="feature-text">Fullscreen</span>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">🎨</span>
+        <span class="feature-text">Clean Canvas</span>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <a href="https://excalidraw.com" target="_blank" class="link">Visit Excalidraw</a>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
