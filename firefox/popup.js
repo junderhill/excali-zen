@@ -6,6 +6,7 @@ class PopupController {
     this.toggleButton = document.getElementById('toggleButton');
     this.buttonIcon = document.getElementById('buttonIcon');
     this.buttonText = document.getElementById('buttonText');
+    this.fullscreenToggle = document.getElementById('fullscreenToggle');
     
     this.init();
   }
@@ -20,6 +21,12 @@ class PopupController {
       browser.runtime.openOptionsPage();
       window.close();
     });
+    
+    // Add fullscreen toggle listener
+    this.fullscreenToggle.addEventListener('change', () => this.saveFullscreenSetting());
+    
+    // Load fullscreen setting
+    await this.loadFullscreenSetting();
     
     // Check if we're on a supported Excalidraw domain
     const tabs = await browser.tabs.query({ active: true, currentWindow: true });
@@ -67,6 +74,31 @@ class PopupController {
     } catch (error) {
       console.error('Error checking custom domains:', error);
       return false;
+    }
+  }
+
+  async loadFullscreenSetting() {
+    try {
+      const result = await browser.storage.local.get(['enableFullscreen']);
+      // Default to true if not set
+      const enableFullscreen = result.enableFullscreen !== undefined ? result.enableFullscreen : true;
+      this.fullscreenToggle.checked = enableFullscreen;
+    } catch (error) {
+      console.error('Error loading fullscreen setting:', error);
+      // Default to true on error
+      this.fullscreenToggle.checked = true;
+    }
+  }
+
+  async saveFullscreenSetting() {
+    try {
+      console.log('Saving fullscreen setting:', this.fullscreenToggle.checked);
+      await browser.storage.local.set({ 
+        enableFullscreen: this.fullscreenToggle.checked 
+      });
+      console.log('Fullscreen setting saved successfully');
+    } catch (error) {
+      console.error('Error saving fullscreen setting:', error);
     }
   }
 

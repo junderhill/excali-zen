@@ -12,6 +12,15 @@
     "*://*/*"
   ],
   
+  "commands": {
+    "toggle-zen-mode": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Z"
+      },
+      "description": "Toggle zen mode"
+    }
+  },
+  
   "content_scripts": [
     {
       "matches": ["*://excalidraw.com/*"],

@@ -210,6 +210,47 @@
       font-family: monospace;
       font-size: 12px;
     }
+
+    .setting-group {
+      margin-bottom: 24px;
+    }
+
+    .setting-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      background: #fafafa;
+    }
+
+    .setting-item input[type="checkbox"] {
+      margin-top: 2px;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .setting-item label {
+      cursor: pointer;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .setting-title {
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .setting-description {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -220,6 +261,21 @@
     </div>
     
     <div class="content">
+      <div class="section">
+        <h2>Zen Mode Settings</h2>
+        <p>Configure how zen mode behaves when activated.</p>
+        
+        <div class="setting-group">
+          <div class="setting-item">
+            <input type="checkbox" id="enableFullscreen" checked>
+            <label for="enableFullscreen">
+              <span class="setting-title">Fullscreen in Zen Mode</span>
+              <span class="setting-description">Automatically enter fullscreen when zen mode is activated</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      
       <div class="section">
         <h2>Custom Domains</h2>
         <p>Add your self-hosted Excalidraw domains to enable zen mode on them. The extension works on excalidraw.com by default.</p>

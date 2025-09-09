@@ -5,6 +5,7 @@ class OptionsManager {
     this.addDomainBtn = document.getElementById('addDomainBtn');
     this.domainList = document.getElementById('domainList');
     this.statusMessage = document.getElementById('statusMessage');
+    this.enableFullscreenCheckbox = document.getElementById('enableFullscreen');
     
     this.init();
   }
@@ -18,8 +19,38 @@ class OptionsManager {
       }
     });
     
-    // Load and display current domains
+    // Add fullscreen setting listener
+    this.enableFullscreenCheckbox.addEventListener('change', () => this.saveFullscreenSetting());
+    
+    // Load settings and domains
+    await this.loadSettings();
     await this.loadDomains();
+  }
+
+  async loadSettings() {
+    try {
+      const result = await browser.storage.local.get(['enableFullscreen']);
+      // Default to true if not set
+      const enableFullscreen = result.enableFullscreen !== undefined ? result.enableFullscreen : true;
+      this.enableFullscreenCheckbox.checked = enableFullscreen;
+    } catch (error) {
+      console.error('Error loading settings:', error);
+      // Default to true on error
+      this.enableFullscreenCheckbox.checked = true;
+    }
+  }
+
+  async saveFullscreenSetting() {
+    try {
+      await browser.storage.local.set({ 
+        enableFullscreen: this.enableFullscreenCheckbox.checked 
+      });
+      
+      this.showStatus('Settings saved successfully!', 'success');
+    } catch (error) {
+      console.error('Error saving fullscreen setting:', error);
+      this.showStatus('Error saving settings', 'error');
+    }
   }
 
   async loadDomains() {

@@ -151,7 +151,10 @@ browser.commands.onCommand.addListener(async (command) => {
         }
         
         try {
-          const response = await browser.tabs.sendMessage(activeTab.id, { action: 'toggleZenMode' });
+          const response = await browser.tabs.sendMessage(activeTab.id, { 
+            action: 'toggleZenMode',
+            fromKeyboard: true 
+          });
           updateBrowserActionIcon(activeTab.id, response.zenMode);
         } catch (error) {
           console.error('Error toggling zen mode via keyboard:', error);

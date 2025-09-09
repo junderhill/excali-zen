@@ -5,11 +5,12 @@ A zen mode extension for [Excalidraw.com](https://excalidraw.com) that hides clu
 ## Features
 
 🧘 **Zen Mode**: Hide all UI elements and focus purely on your drawings  
-📺 **Auto Fullscreen**: Automatically enters fullscreen mode for maximum canvas space  
+📺 **Smart Fullscreen**: Configurable fullscreen mode with browser-friendly behavior  
 🎯 **Focus Mode**: Removes distracting elements like menus, toolbars, and buttons  
-⌨️ **Keyboard Shortcut**: Quick toggle with `Ctrl+Shift+Z` (or `Cmd+Shift+Z` on Mac)  
+⌨️ **Keyboard Shortcut**: Quick toggle with `Ctrl+Shift+Z` for full zen experience  
 🎨 **Clean Canvas**: Provides a distraction-free drawing environment  
 🌙 **Auto Cursor Hide**: Cursor automatically hides after 3 seconds of inactivity  
+⚙️ **Customizable**: Configure fullscreen behavior and add custom domains  
 
 ## Installation
 
@@ -35,17 +36,17 @@ A zen mode extension for [Excalidraw.com](https://excalidraw.com) that hides clu
 ## Usage
 
 ### Quick Start
-1. Visit [Excalidraw.com](https://excalidraw.com)
-2. Click the 🧘 extension icon in the toolbar, or
-3. Press `Ctrl+Shift+Z` (Windows/Linux) or `Cmd+Shift+Z` (Mac)
+1. Visit [Excalidraw.com](https://excalidraw.com) or your custom domain
+2. **For full zen experience**: Press `Ctrl+Shift+Z` (includes fullscreen)
+3. **For windowed zen**: Click the 🧘 extension icon in the toolbar
 4. Enjoy distraction-free drawing!
 
 ### Features in Detail
 
-**Zen Mode Toggle**:
-- Click the extension icon to toggle zen mode on/off
+**Zen Mode Activation**:
+- **Keyboard shortcut (`Ctrl+Shift+Z`)**: Full zen mode with fullscreen (recommended)
+- **Extension icon**: Zen mode without fullscreen (browser limitation)
 - Icon changes to 🌅 when zen mode is active
-- Use keyboard shortcut for quick access
 
 **What Gets Hidden**:
 - Top menu bar and all menus
@@ -57,21 +58,35 @@ A zen mode extension for [Excalidraw.com](https://excalidraw.com) that hides clu
 - Help dialogs
 - All floating UI elements
 
-**Fullscreen Mode**:
-- Automatically requests fullscreen when zen mode is activated
-- Exits fullscreen when zen mode is disabled
-- Works across all modern browsers
+**Smart Fullscreen Mode**:
+- **Configurable**: Enable/disable in popup or options page
+- **Keyboard activation**: `Ctrl+Shift+Z` enables fullscreen (browser allows this)
+- **Icon activation**: Shows helpful message about using keyboard shortcut
+- **Auto-exit**: Exits fullscreen when zen mode is disabled
 
 **Cursor Auto-Hide**:
 - Cursor automatically hides after 3 seconds of no movement
 - Reappears immediately when you move the mouse
 - Only active during zen mode
 
+### Customization
+
+**Fullscreen Toggle**:
+- **Location**: Available in both popup and options page
+- **Default**: Enabled (maintains original behavior)
+- **When enabled**: Fullscreen works with keyboard shortcut, helpful message shown for icon clicks
+- **When disabled**: No fullscreen attempts, zen mode works in windowed mode
+
+**Custom Domains**:
+- Add your self-hosted Excalidraw instances via options page
+- Extension works seamlessly across all configured domains
+- Supports HTTP/HTTPS and custom ports
+
 ## Keyboard Shortcuts
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+Shift+Z` (Windows/Linux)<br>`Cmd+Shift+Z` (Mac) | Toggle Zen Mode |
+| `Ctrl+Shift+Z` | Toggle Zen Mode (with fullscreen if enabled) |
 
 *Note: All existing Excalidraw shortcuts continue to work in zen mode*
 
@@ -103,9 +118,10 @@ This extension:
 - Check that the extension is enabled in Firefox
 
 **Fullscreen not working?**
-- Some browsers require user interaction for fullscreen
-- Try clicking the extension icon instead of using keyboard shortcut
-- Check browser fullscreen permissions
+- **Use keyboard shortcut**: `Ctrl+Shift+Z` (browsers allow fullscreen from keyboard)
+- **From extension icon**: Shows message "Use Ctrl+Shift+Z for fullscreen" (browser limitation)
+- **Disable if not needed**: Toggle off fullscreen in popup or options page
+- Check browser fullscreen permissions if keyboard shortcut still fails
 
 **Zen mode stuck on?**
 - Press `Ctrl+Shift+Z` again to toggle off

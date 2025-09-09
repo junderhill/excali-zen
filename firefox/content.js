@@ -10,7 +10,7 @@ class ExcaliZen {
     // Listen for messages from popup and background script
     browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (message.action === 'toggleZenMode') {
-        this.toggleZenMode();
+        this.toggleZenMode(message.fromKeyboard || false);
         sendResponse({ zenMode: this.isZenMode });
       } else if (message.action === 'getZenState') {
         sendResponse({ zenMode: this.isZenMode });
@@ -27,7 +27,7 @@ class ExcaliZen {
     document.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'Z') {
         e.preventDefault();
-        this.toggleZenMode();
+        this.toggleZenMode(true); // fromKeyboard = true
       }
     });
   }
@@ -51,20 +51,43 @@ class ExcaliZen {
     }
   }
 
-  toggleZenMode() {
-    if (this.isZenMode) {
-      this.disableZenMode();
-    } else {
-      this.enableZenMode();
+  async shouldEnterFullscreen() {
+    try {
+      const result = await browser.storage.local.get(['enableFullscreen']);
+      // Default to true if not set
+      const shouldEnter = result.enableFullscreen !== undefined ? result.enableFullscreen : true;
+      console.log('Fullscreen setting:', shouldEnter, 'Raw result:', result);
+      return shouldEnter;
+    } catch (error) {
+      console.log('Could not load fullscreen setting:', error);
+      // Default to true on error
+      return true;
     }
   }
 
-  enableZenMode() {
+  toggleZenMode(fromKeyboard = false) {
+    if (this.isZenMode) {
+      this.disableZenMode();
+    } else {
+      this.enableZenMode(fromKeyboard);
+    }
+  }
+
+  async enableZenMode(fromKeyboard = false) {
     this.isZenMode = true;
     document.body.classList.add('excali-zen-mode');
     
-    // Request fullscreen
-    this.requestFullscreen();
+    // Check if fullscreen should be enabled and if we can request it
+    const shouldEnterFullscreen = await this.shouldEnterFullscreen();
+    let notificationMessage = 'Zen mode enabled';
+    
+    if (shouldEnterFullscreen && fromKeyboard) {
+      // Only request fullscreen if triggered by keyboard (proper user gesture)
+      this.requestFullscreen();
+    } else if (shouldEnterFullscreen && !fromKeyboard) {
+      // Show a helpful message if fullscreen is enabled but triggered from popup
+      notificationMessage = 'Zen mode enabled. Use Ctrl+Shift+Z for fullscreen.';
+    }
     
     // Update page title
     document.title = '🧘 Zen Mode - ' + this.originalTitle;
@@ -73,15 +96,17 @@ class ExcaliZen {
     this.setupCursorHiding();
     
     this.saveZenState();
-    this.showZenNotification('Zen mode enabled');
+    this.showZenNotification(notificationMessage);
   }
 
-  disableZenMode() {
+  async disableZenMode() {
     this.isZenMode = false;
     document.body.classList.remove('excali-zen-mode');
     
-    // Exit fullscreen
-    this.exitFullscreen();
+    // Exit fullscreen only if we're currently in fullscreen
+    if (document.fullscreenElement) {
+      this.exitFullscreen();
+    }
     
     // Restore original title
     document.title = this.originalTitle;
@@ -95,14 +120,22 @@ class ExcaliZen {
 
   requestFullscreen() {
     const element = document.documentElement;
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if (element.mozRequestFullScreen) {
-      element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen();
-    } else if (element.msRequestFullscreen) {
-      element.msRequestFullscreen();
+    try {
+      if (element.requestFullscreen) {
+        element.requestFullscreen().catch(error => {
+          console.log('Fullscreen request failed:', error);
+          this.showZenNotification('Fullscreen blocked - try using Ctrl+Shift+Z instead');
+        });
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    } catch (error) {
+      console.log('Fullscreen request failed:', error);
+      this.showZenNotification('Fullscreen blocked - try using Ctrl+Shift+Z instead');
     }
   }
 
